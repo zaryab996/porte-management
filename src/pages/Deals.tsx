@@ -36,6 +36,7 @@ import {
 } from "lucide-react";
 import { mockDealsData } from "@/data/mockData";
 import talentAvatar1 from "@/assets/talent-avatar-1.jpg";
+import { Link } from "react-router-dom";
 
 interface User {
   name: string;
@@ -388,74 +389,12 @@ const DealCard = ({
 
           <div className="flex gap-2">
             {/* ---------- DETAILS DIALOG ---------- */}
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="default" size="sm" >
-                  <Eye className="w-4 h-4 mr-1" />
-                  Details
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-lg bg-white/90 backdrop-blur">
-                <DialogHeader>
-                  <DialogTitle>{deal.brandName} — {deal.dealType}</DialogTitle>
-                  <DialogDescription>Full deal breakdown</DialogDescription>
-                </DialogHeader>
-                <div className="space-y-5 py-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-sm font-medium">Total Value</p>
-                      <p className="text-xl font-bold">${deal.value.toLocaleString()}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium">Your Share</p>
-                      <p className={`text-xl font-bold ${text}`}>${talentEarnings.toLocaleString()}</p>
-                    </div>
-                  </div>
-
-                  <div>
-                    <p className="text-sm font-medium mb-2">Revenue Split</p>
-                    <div className="space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span>Talent</span>
-                        <span>${talentEarnings.toLocaleString()}</span>
-                      </div>
-                      <Progress value={100 - deal.commissionRate} className="h-2" />
-                      <div className="flex justify-between text-sm">
-                        <span>PMA Commission</span>
-                        <span>${commission.toLocaleString()}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <p className="text-sm font-medium">Description</p>
-                    <p className="text-sm text-muted-foreground">{deal.description}</p>
-                  </div>
-
-                  {deal.status === "rejected" && deal.rejectReason && (
-                    <div className="p-3 bg-red-50 rounded-lg">
-                      <p className="text-sm font-medium text-red-800">Rejection Reason</p>
-                      <p className="text-sm text-red-700">{deal.rejectReason}</p>
-                    </div>
-                  )}
-
-                  {/* Approved → Upload / Contract */}
-                  {deal.status === "approved" && (
-                   <div className="flex gap-2">
-      <Button size="sm" className="flex-1 bg-primary" onClick={handleUpload}>
-        <Upload className="w-4 h-4 mr-2" />
-        Upload Content
-      </Button>
-
-      <Button variant="outline" size="sm" onClick={handleDownload}>
-        <Download className="w-4 h-4 mr-2" />
-        Contract
-      </Button>
-    </div>
-                  )}
-                </div>
-              </DialogContent>
-            </Dialog>
+          <Link to={`/dealDetails/${deal.id}`}>
+  <Button variant="default" size="sm">
+    <Eye className="w-4 h-4 mr-1" />
+    Details
+  </Button>
+</Link>
 
             {/* ---------- PENDING ACTIONS ---------- */}
             {deal.status === "pending" && (

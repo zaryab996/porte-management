@@ -31,6 +31,7 @@ export interface Deal {
   talentId: string;
   brandName: string;
   dealType: string;
+  image: string;
   value: number;
   status: 'pending' | 'approved' | 'completed' | 'rejected';
   date: string;
@@ -129,9 +130,10 @@ export const mockDealsData: Deal[] = [
     talentId: "1",
     brandName: "Nike",
     dealType: "Social Media Campaign",
+    image:"/nike.png",
     value: 15000,
     status: "approved",
-    date: "2024-01-15",
+    date: "2025-12-17",
     description: "Instagram and TikTok posts featuring new basketball shoe line",
     commissionRate: 15
   },
@@ -140,9 +142,10 @@ export const mockDealsData: Deal[] = [
     talentId: "1",
     brandName: "Lululemon",
     dealType: "Brand Partnership",
+    image:"/lululemon.jpg",
     value: 25000,
     status: "pending",
-    date: "2024-01-20",
+    date: "2025-12-17",
     description: "6-month wellness content partnership with product placement",
     commissionRate: 15
   },
@@ -151,9 +154,10 @@ export const mockDealsData: Deal[] = [
     talentId: "1",
     brandName: "Spotify",
     dealType: "Music Collaboration",
+    image:"/spotify_new.png",
     value: 8000,
     status: "completed",
-    date: "2024-01-10",
+    date: "2025-12-17",
     description: "Custom playlist curation and promotional content",
     commissionRate: 15
   }
@@ -167,8 +171,8 @@ export const mockCampaignsData: Campaign[] = [
     budget: 100000,
     talent: ["Marcus Thompson", "Sofia Rodriguez"],
     status: "active",
-    startDate: "2024-02-01",
-    endDate: "2024-03-15",
+    startDate: "2025-12-17",
+    endDate: "2025-12-27",
     reach: 500000,
     engagement: 45000
   },
@@ -179,8 +183,8 @@ export const mockCampaignsData: Campaign[] = [
     budget: 75000,
     talent: ["Sofia Rodriguez"],
     status: "active",
-    startDate: "2024-01-01",
-    endDate: "2024-12-31",
+    startDate: "2025-11-17",
+    endDate: "2025-12-17",
     reach: 300000,
     engagement: 35000
   }

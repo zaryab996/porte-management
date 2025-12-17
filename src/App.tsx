@@ -23,8 +23,10 @@ import Earnings from "./pages/Earnings";
 import Roster from "./pages/Roster";
 import Analytics from "./pages/Analytics";
 import Profile from "./pages/Profile";
+
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
+import DealDetails from "./pages/DealDetails";
 
 const queryClient = new QueryClient();
 
@@ -44,7 +46,8 @@ const getAuth = (): Auth | null => {
   }
 };
 
-const setAuth = (auth: Auth) => localStorage.setItem("auth", JSON.stringify(auth));
+const setAuth = (auth: Auth) =>
+  localStorage.setItem("auth", JSON.stringify(auth));
 const clearAuth = () => localStorage.removeItem("auth");
 
 /* ────────────────────── ProtectedRoute ────────────────────── */
@@ -65,7 +68,7 @@ const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
 
   // ── Wrong role ───────────────────────────────────────
   if (allowedRoles && !allowedRoles.includes(auth.role)) {
-    navigate(-1);               // just go back
+    navigate(-1); // just go back
     return null;
   }
 
@@ -129,7 +132,6 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-
           {/* ---------- PUBLIC ONLY (login / signup / index) ---------- */}
           <Route
             path="/login"
@@ -155,10 +157,7 @@ const App = () => (
               </PublicOnlyRoute>
             }
           /> */}
-            <Route
-    path="/"
-    element={<Navigate to="/login" replace />}
-  />
+          <Route path="/" element={<Navigate to="/login" replace />} />
 
           {/* --------------------- PROTECTED ROUTES --------------------- */}
           <Route
@@ -230,6 +229,15 @@ const App = () => (
             element={
               <ProtectedRoute allowedRoles={["talent", "brand", "admin"]}>
                 <Profile />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/dealDetails/:id" // Add :id parameter here
+            element={
+              <ProtectedRoute allowedRoles={["talent", "brand", "admin"]}>
+                <DealDetails />
               </ProtectedRoute>
             }
           />
