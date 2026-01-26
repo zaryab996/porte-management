@@ -248,11 +248,14 @@ const Earnings = () => {
                     <YAxis tick={{ fill: "primary" }} />
                     <Tooltip
                       contentStyle={{
-                        backgroundColor: "primary",
+                        backgroundColor: "rgba(0,0,0,0.7)", // semi-transparent black
                         border: "1px solid #e2e8f0",
                         borderRadius: "8px",
+                        color: "white", // text stays readable
+                        padding: "6px 10px",
                       }}
                     />
+
                     <Bar dataKey="earnings" fill="url(#gradient)" radius={[8, 8, 0, 0]} />
                     <defs>
                       <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
@@ -338,7 +341,7 @@ const Earnings = () => {
             </Card>
 
             {/* Payment Method */}
-           <PaymentMethodCard />
+            <PaymentMethodCard />
 
             {/* Tax Information */}
             <Card className="bg-white/70 backdrop-blur-md border border-white/30 shadow-xl">
@@ -356,7 +359,7 @@ const Earnings = () => {
                     <p className="text-xl font-bold text-amber-700">${(totalEarnings * 0.25).toLocaleString()}</p>
                     <p className="text-xs text-amber-600">25% estimated rate</p>
                   </div>
-                
+
                 </div>
               </CardContent>
             </Card>
