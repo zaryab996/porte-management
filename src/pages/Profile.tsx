@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { Navigation } from "@/components/ui/navigation";
 import { Switch } from "@/components/ui/switch";
-import { Sparkles, Image as ImageIcon } from "lucide-react";
+import { Sparkles, Image as ImageIcon, Phone, Mail as MailIcon, CheckCircle2, AlertCircle } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -17,7 +17,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   User,
   Mail,
-  Phone,
   MapPin,
   Camera,
   BadgeCheck,
@@ -39,6 +38,7 @@ import talentAvatar1 from "@/assets/talent-avatar-1.jpg";
 const Profile = () => {
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const datasetInputRef = useRef<HTMLInputElement>(null);
 
   const [user, setUser] = useState({
     name: "Marcus Thompson",
@@ -52,7 +52,10 @@ const Profile = () => {
     location: "Durham, NC",
     bio: "Rising star in college basketball with a passion for community engagement and youth mentorship. Duke University guard with 18.5 PPG average. NIL advocate and public speaker.",
   });
-  const [allowAILikeness, setAllowAILikeness] = useState(true);
+  const [allowAILikeness, setAllowAILikeness] = useState(false);
+  const [showUploadFlow, setShowUploadFlow] = useState(false);
+  const [datasetSubmitted, setDatasetSubmitted] = useState(false);
+  const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
 
   const [avatarPreview, setAvatarPreview] = useState<string | null>(
     user.avatar
@@ -90,6 +93,58 @@ const Profile = () => {
   // --- Cancel → Dashboard ---
   const handleCancel = () => {
     navigate("/dashboard");
+  };
+
+  // --- Open Dataset File Picker ---
+  const openDatasetPicker = () => {
+    datasetInputRef.current?.click();
+  };
+
+  // --- Handle Dataset File Selection ---
+  const handleDatasetFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    // Get file names
+    const fileNames = Array.from(files).map((file) => file.name);
+    setUploadedFiles(fileNames);
+    setDatasetSubmitted(true);
+    setShowUploadFlow(false);
+
+    // Message persists to show professional status
+  };
+
+  // --- Required Images for AI Dataset ---
+  const requiredImages = [
+    { id: 1, title: "Front-facing portrait", description: "Clear facial features, good lighting, neutral background" },
+    { id: 2, title: "Side profile", description: "Left and right profile views for facial geometry" },
+    { id: 3, title: "3/4 angle", description: "Quarter-turn view for dimensional accuracy" },
+    { id: 4, title: "Full body (standing)", description: "Head-to-toe shot showing posture and build" },
+    { id: 5, title: "Full body (casual)", description: "Natural pose in relaxed position" },
+    { id: 6, title: "Different expressions", description: "Smiling, neutral, and engaged expressions" },
+  ];
+
+  // --- Handle Dataset Upload ---
+  const handleDatasetUpload = () => {
+    // Simulate file upload
+    setUploadedFiles(["dataset_marcus_001.zip"]);
+    setDatasetSubmitted(true);
+    setShowUploadFlow(false);
+
+    // Show success message and reset after 3 seconds
+    setTimeout(() => {
+      setDatasetSubmitted(false);
+    }, 4000);
+  };
+
+  // --- Reset AI Likeness State ---
+  const handleToggleAILikeness = (checked: boolean) => {
+    setAllowAILikeness(checked);
+    if (!checked) {
+      setShowUploadFlow(false);
+      setDatasetSubmitted(false);
+      setUploadedFiles([]);
+    }
   };
 
   return (
@@ -335,64 +390,100 @@ const Profile = () => {
                   <Switch
                     id="ai-toggle"
                     checked={allowAILikeness}
-                    onCheckedChange={setAllowAILikeness}
+                    onCheckedChange={handleToggleAILikeness}
                     className="data-[state=checked]:bg-indigo-600"
                   />
                 </div>
 
-                {/* AI Preview Images */}
-                {allowAILikeness && (
-                  <div className="space-y-3">
-                    <p className="text-sm font-medium text-indigo-700 flex items-center gap-1">
-                      <ImageIcon className="h-4 w-4" />
-                      Preview of Your AI Avatar
-                    </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                      <div className="group relative overflow-hidden rounded-xl shadow-md">
-                        <img
-                          src="1.png"
-                          alt="AI mock 1"
-                          className="w-full h-48 object-cover transition-transform group-hover:scale-105"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3">
-                          <p className="text-white text-xs font-medium">
-                            Nike Campaign
-                          </p>
-                        </div>
-                      </div>
-                      <div className="group relative overflow-hidden rounded-xl shadow-md">
-                        <img
-                          src="/2.png"
-                          alt="AI mock 2"
-                          className="w-full h-48 object-cover transition-transform group-hover:scale-105"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3">
-                          <p className="text-white text-xs font-medium">
-                            Gatorade Ad
-                          </p>
-                        </div>
-                      </div>
-                      <div className="group relative overflow-hidden rounded-xl shadow-md">
-                        <img
-                          src="/3.png"
-                          alt="AI mock 3"
-                          className="w-full h-48 object-cover transition-transform group-hover:scale-105"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3">
-                          <p className="text-white text-xs font-medium">
-                            Adidas Digital
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Disabled State */}
+                {/* WHEN DISABLED OR NO DATASET */}
                 {!allowAILikeness && (
                   <div className="text-center py-8 text-muted-foreground">
                     <Sparkles className="h-10 w-10 mx-auto mb-2 text-gray-300" />
-                    <p>AI Likeness is currently disabled</p>
+                    <p className="text-sm font-medium">AI Digital Likeness not yet created</p>
+                  </div>
+                )}
+
+                {/* WHEN ENABLED - DATASET COLLECTION PROMPT */}
+                {allowAILikeness && !datasetSubmitted && (
+                  <div className="space-y-4">
+                    <div className="p-4 bg-white rounded-lg border border-indigo-200">
+                      <p className="text-sm text-foreground font-medium mb-4">
+                        Creating your AI Digital Likeness requires a verified image dataset for accuracy and consent.
+                      </p>
+
+                      {/* Two Paths */}
+                      {!showUploadFlow ? (
+                        <div className="space-y-3">
+                          {/* Option 1: Contact PMA - INFORMATIONAL (NOT CLICKABLE) */}
+                          <div className="flex items-start gap-3 p-4 bg-indigo-50 rounded-lg border border-indigo-100">
+                            <MailIcon className="h-5 w-5 text-indigo-600 mt-0.5 flex-shrink-0" />
+                            <div className="text-left">
+                              <p className="font-semibold text-sm text-foreground">Contact PMA for Guided Collection</p>
+                              <p className="text-xs text-muted-foreground mt-1">
+                                Get expert guidance on professional dataset collection (Recommended)
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Option 2: Upload Dataset - CLICKABLE BUTTON */}
+                          <Button
+                            onClick={openDatasetPicker}
+                            variant="outline"
+                            className="w-full justify-start h-auto p-4 border-2 border-indigo-300 hover:border-indigo-500 hover:bg-indigo-100 cursor-pointer transition-colors"
+                          >
+                            <div className="flex items-start gap-3 w-full">
+                              <ImageIcon className="h-5 w-5 text-indigo-600 mt-0.5 flex-shrink-0" />
+                              <div className="text-left">
+                                <p className="font-semibold text-sm text-foreground">Upload Existing Dataset</p>
+                                <p className="text-xs text-muted-foreground mt-1">
+                                  Have images ready? Click to upload your dataset for review
+                                </p>
+                              </div>
+                            </div>
+                          </Button>
+
+                          {/* Hidden File Input - Multiselect */}
+                          <input
+                            ref={datasetInputRef}
+                            id="dataset-upload"
+                            type="file"
+                            multiple
+                            accept="image/*,.zip,.rar"
+                            onChange={handleDatasetFileChange}
+                            className="hidden"
+                          />
+                        </div>
+                      ) : null}
+                    </div>
+
+
+                  </div>
+                )}
+
+                {/* DATASET SUBMITTED - CONFIRMATION */}
+                {datasetSubmitted && (
+                  <div className="space-y-4">
+                    <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-lg space-y-3">
+                      <div className="flex items-start gap-3">
+                        <CheckCircle2 className="h-6 w-6 text-emerald-600 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="font-semibold text-emerald-900">Dataset Received</p>
+                          <p className="text-sm text-emerald-800 mt-1">
+                            Your dataset has been received. A member of the PMA team will review your submission and follow up with a status update.
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-xs text-emerald-700 pt-2 border-t border-emerald-200">
+                        Submitted: {new Date().toLocaleDateString()} at {new Date().toLocaleTimeString()}
+                      </div>
+                    </div>
+
+                    {/* Status - Pending Review */}
+                    <div className="text-center py-8 text-muted-foreground">
+                      <Sparkles className="h-10 w-10 mx-auto mb-2 text-gray-300" />
+                      <p className="text-sm font-medium">AI Digital Likeness not yet created</p>
+                      <p className="text-xs text-muted-foreground mt-2">Pending PMA review</p>
+                    </div>
                   </div>
                 )}
               </CardContent>
